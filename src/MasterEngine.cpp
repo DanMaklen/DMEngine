@@ -5,18 +5,10 @@ using namespace std;
 #include <Main.h>
 #include <MasterEngine.h>
 
-//SomeData
-GLuint vao, vbo, vs, fs, sp;
-float vertices[] =
-	{-0.5f, -0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
-     0.0f,  0.5f, 0.0f};
-
 MasterEngine::MasterEngine(){
 	win = CreateWindow(800, 600, "Hello World");
 	SetEventCapture(win, EventKeyboard);
 	SetKeyboardCallback(&MasterEngine::KeyboardEventHandler);
-	//if(glewInit() != GLEW_OK){DME::log("Unable to initialize GLEW"); exit(-1);}
 	Init();
 }
 MasterEngine::~MasterEngine(){
@@ -31,6 +23,17 @@ void MasterEngine::Run(){
 	}
 }
 
+//SomeData
+GLuint vao, vbo, ebo, vs, fs, fs1, sp, sp1;
+float vertices[] = {
+     1.0f,  1.0f, 0.0f,
+    -1.0f,  1.0f, 0.0f,
+     0.0f,  0.0f, 0.0f,
+     1.0f, -1.0f, 0.0f,
+    -1.0f, -1.0f, 0.0f
+};
+unsigned short indices[] = {0, 1, 2, 2, 3, 4};
+
 //Event Handlers
 void MasterEngine::KeyboardEventHandler(GLFWwindow*, int key, int scancode, int action, int mod){
 	switch(key){
@@ -44,30 +47,39 @@ void MasterEngine::KeyboardEventHandler(GLFWwindow*, int key, int scancode, int 
 void MasterEngine::Init(){
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glViewport(0, 0, 800, 600);
-
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	
 	vs = LoadShader("Shaders/Test.vs", GL_VERTEX_SHADER);
 	fs = LoadShader("Shaders/Test.fs", GL_FRAGMENT_SHADER);
+	fs1 = LoadShader("Shaders/Test1.fs", GL_FRAGMENT_SHADER);
 	sp = LinkShader(vs, fs);
+	sp1 = LinkShader(vs, fs1);
 	glDeleteShader(vs);
 	glDeleteShader(fs);
+	glDeleteShader(fs1);
 
 	glGenBuffers(1, &vbo);
+	glGenBuffers(1, &ebo);
 	glGenVertexArrays(1, &vao);
 	
 	glBindVertexArray(vao);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(0);		
 	glBindVertexArray(0);
 
 }
 void MasterEngine::Render(){
 	glClear(GL_COLOR_BUFFER_BIT);
 	
-	glUseProgram(sp);
 	glBindVertexArray(vao);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glUseProgram(sp);
+	glDrawElements(GL_TRIANGLES, sizeof(indices)/sizeof(unsigned short), GL_UNSIGNED_SHORT, (void*)(0*sizeof(unsigned short)));
+	glUseProgram(sp1);
+	glDrawElements(GL_TRIANGLES, sizeof(indices)/sizeof(unsigned short), GL_UNSIGNED_SHORT, (void*)(3*sizeof(unsigned short)));
 	glBindVertexArray(0);
 	
 }
