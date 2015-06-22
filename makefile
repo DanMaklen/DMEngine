@@ -13,7 +13,7 @@ Objects = \
 build: $(AppName)
 
 $(AppName): $(Objects)
-	$(CC) $(Objects) -o $(AppName) $(Flags) -lglfw -lGL
+	$(CC) $(Objects) -o $(AppName) $(Flags) -lglfw -lGL -lGLEW
 
 $(BDir)/__DMEngine__.o: $(SDir)/__DMEngine__.cpp
 	$(CC) -c $< -o $@ $(Flags) #-include $(HDir)/__DMEngine__.h

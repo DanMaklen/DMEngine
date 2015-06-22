@@ -11,6 +11,7 @@ private:
 
 public:
 	MasterEngine();
+	~MasterEngine();
 	void Run();
 
 //Event Handlers

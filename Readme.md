@@ -1,8 +1,11 @@
 Current Features:
 	-Creating Window
-	-File Logging
+	-File Logging System
+	-Shader File Loading
+	-Shader Program Lingking
 
 Working On:
+	-
 
 Future Ideas:
 	-ini File for settings like log folder location.

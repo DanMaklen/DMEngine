@@ -80,5 +80,6 @@ extern void SetWindowIconifiedCallback(WindowIconifiedCallbackFunc_t);
 extern void SetFrameResizeCallback(FrameResizeCallbackFunc_t);
 
 //Misc
-extern int LoadShader(const char*, GLenum);
+extern unsigned int LoadShader(const char*, GLenum);
+extern unsigned int LinkShader(unsigned int, unsigned int, bool = false);
 #endif
