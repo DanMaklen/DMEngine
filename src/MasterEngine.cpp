@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 using namespace std;
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -26,11 +27,12 @@ void MasterEngine::Run(){
 //SomeData
 GLuint vao, vbo, ebo, vs, fs, fs1, sp, sp1;
 float vertices[] = {
-     1.0f,  1.0f, 0.0f,
-    -1.0f,  1.0f, 0.0f,
-     0.0f,  0.0f, 0.0f,
-     1.0f, -1.0f, 0.0f,
-    -1.0f, -1.0f, 0.0f
+	//Pos 					//Color
+     1.0f,  1.0f, 0.0f,		1.0, 0.0, 0.0,
+    -1.0f,  1.0f, 0.0f,		0.0, 1.0, 0.0,
+     0.0f,  0.0f, 0.0f,		0.0, 0.0, 1.0,
+     1.0f, -1.0f, 0.0f,		1.0, 1.0, 0.0,
+    -1.0f, -1.0f, 0.0f,		0.0, 1.0, 1.0
 };
 unsigned short indices[] = {0, 1, 2, 2, 3, 4};
 
@@ -51,12 +53,12 @@ void MasterEngine::Init(){
 	
 	vs = LoadShader("Shaders/Test.vs", GL_VERTEX_SHADER);
 	fs = LoadShader("Shaders/Test.fs", GL_FRAGMENT_SHADER);
-	fs1 = LoadShader("Shaders/Test1.fs", GL_FRAGMENT_SHADER);
+	//fs1 = LoadShader("Shaders/Test1.fs", GL_FRAGMENT_SHADER);
 	sp = LinkShader(vs, fs);
-	sp1 = LinkShader(vs, fs1);
+	//sp1 = LinkShader(vs, fs1);
 	glDeleteShader(vs);
 	glDeleteShader(fs);
-	glDeleteShader(fs1);
+	//glDeleteShader(fs1);
 
 	glGenBuffers(1, &vbo);
 	glGenBuffers(1, &ebo);
@@ -67,8 +69,10 @@ void MasterEngine::Init(){
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, false, 6 * sizeof(float), (void*)(0));
+		glVertexAttribPointer(1, 3, GL_FLOAT, false, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 		glEnableVertexAttribArray(0);		
+		glEnableVertexAttribArray(1);		
 	glBindVertexArray(0);
 
 }
@@ -76,10 +80,11 @@ void MasterEngine::Render(){
 	glClear(GL_COLOR_BUFFER_BIT);
 	
 	glBindVertexArray(vao);
-	glUseProgram(sp);
-	glDrawElements(GL_TRIANGLES, sizeof(indices)/sizeof(unsigned short), GL_UNSIGNED_SHORT, (void*)(0*sizeof(unsigned short)));
-	glUseProgram(sp1);
-	glDrawElements(GL_TRIANGLES, sizeof(indices)/sizeof(unsigned short), GL_UNSIGNED_SHORT, (void*)(3*sizeof(unsigned short)));
+		glUseProgram(sp);
+		//glUniform4f(glGetUniformLocation(sp, "MyColor"), 1.0f, (sin(glfwGetTime()/2) / 2) + 0.5, 0.0f, 0.0f);
+		glDrawElements(GL_TRIANGLES, sizeof(indices)/sizeof(unsigned short), GL_UNSIGNED_SHORT, (void*)(0*sizeof(unsigned short)));
+		//glUniform4f(glGetUniformLocation(sp, "MyColor"), 0.0f, 0.0f, 1.0f, 0.0f);
+		glDrawElements(GL_TRIANGLES, sizeof(indices)/sizeof(unsigned short), GL_UNSIGNED_SHORT, (void*)(3*sizeof(unsigned short)));
 	glBindVertexArray(0);
 	
 }

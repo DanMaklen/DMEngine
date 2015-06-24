@@ -1,4 +1,3 @@
-CC = g++
 SDir = ./src
 HDir = ./include
 BDir = ./build

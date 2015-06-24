@@ -3,23 +3,6 @@
 using namespace std;
 
 namespace DMEngine{
-class LOG;
-class Log{
-	friend class LOG;
-	Log(const Log&) = delete;
-	Log(Log&&) = delete;
-	Log();
-public:
-	static Log& __GetInstance();
-private:
-	FILE* __file;
-public:
-	~Log();
-	const LOG operator()() const;
-	int operator()(const char*, ...) const;
-};
-const Log& log = Log::__GetInstance();
-
 class LOG{
 public:
 	LOG();
@@ -42,6 +25,22 @@ public:
 	const LOG& operator<<(const double) const;
 	const LOG& operator<<(const long double) const;
 };
+
+class Log{
+	friend class LOG;
+	Log(const Log&) = delete;
+	Log(Log&&) = delete;
+	Log();
+public:
+	static Log& __GetInstance();
+private:
+	FILE* __file;
+public:
+	~Log();
+	const LOG operator()() const;
+	int operator()(const char*, ...) const;
+};
+const Log& log = Log::__GetInstance();
 
 //LOG
 LOG::LOG(){}

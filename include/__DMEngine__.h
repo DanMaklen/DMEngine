@@ -1,7 +1,6 @@
 #ifndef __20150610____DMENIGNE___H
 #define __20150610____DMENIGNE___H
 namespace DMEngine{
-class Log;
 class LOG{
 	LOG(const LOG&) = delete;
 	LOG(LOG&&) = delete;

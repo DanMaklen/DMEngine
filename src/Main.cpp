@@ -3,7 +3,6 @@
 #include <cstdio>
 #include <cstdlib>
 using namespace std;
-#define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <Main.h>
@@ -238,7 +237,7 @@ void SetFrameResizeCallback(FrameResizeCallbackFunc_t func){__FrameResizeCallbac
 int main(){
 	if(glfwInit() != GL_TRUE){DME::log("Unable to initialize GLFW"); exit(-1);}
 	GLFWwindow* tw = CreateWindow(100, 100, "");	//Temporary hack to initialize glew
-	glewExperimental = GL_TRUE;
+	//glewExperimental = GL_TRUE;
 	if(glewInit() != GLEW_OK){DME::log("Unable to initialize GLEW"); exit(-1);}
 	glfwDestroyWindow(tw);
 
@@ -295,7 +294,6 @@ unsigned int LoadShader(const char* fpath, GLenum ShaderType){
   	}
   	return sid;
 }
-
 unsigned int LinkShader(unsigned int vsID, unsigned int fsID, bool del){
 	int spID = glCreateProgram();
 	glAttachShader(spID, vsID);
@@ -304,13 +302,13 @@ unsigned int LinkShader(unsigned int vsID, unsigned int fsID, bool del){
 
 	int success;
 	glGetProgramiv(spID, GL_LINK_STATUS, &success);
+	DME::log() << success;
 	if(!success){
 		DME::log("Shader Linking Faild: vsID(%u) fsID(%u)", vsID, fsID);
 		char* error;
 		int len;
 		glGetProgramiv(spID, GL_INFO_LOG_LENGTH, &len);
 		error = new char[len];
-		cout << len << endl;
 		glGetProgramInfoLog(spID, len, &len, error);
 		DME::log("%s", error);
 
