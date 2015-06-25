@@ -4,3 +4,6 @@ release/*
 app-*
 *.log
 *.exe
+*.ilk
+*.pdb
+*.user

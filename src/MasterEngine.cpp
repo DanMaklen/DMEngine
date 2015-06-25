@@ -51,8 +51,8 @@ void MasterEngine::Init(){
 	glViewport(0, 0, 800, 600);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	
-	vs = LoadShader("Shaders/Test.vs", GL_VERTEX_SHADER);
-	fs = LoadShader("Shaders/Test.fs", GL_FRAGMENT_SHADER);
+	vs = LoadShader("shaders/Test.vs", GL_VERTEX_SHADER);
+	fs = LoadShader("shaders/Test.fs", GL_FRAGMENT_SHADER);
 	//fs1 = LoadShader("Shaders/Test1.fs", GL_FRAGMENT_SHADER);
 	sp = LinkShader(vs, fs);
 	//sp1 = LinkShader(vs, fs1);

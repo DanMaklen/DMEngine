@@ -20,6 +20,7 @@
 		<ConfigurationType>Makefile</ConfigurationType>
 		<UseDebugLibraries>true</UseDebugLibraries>
 		<PlatformToolset>v120</PlatformToolset>
+		<BaseIntermediateOutputPath>Build/</BaseIntermediateOutputPath>
 		<NMakeOutput>DMEngine.exe</NMakeOutput>
 		<NMakeBuildCommandLine>nmake /F NMakefile build</NMakeBuildCommandLine>
 		<NMakeReBuildCommandline>nmake /F NMakefile rebuild</NMakeReBuildCommandline>
