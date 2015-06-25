@@ -20,7 +20,7 @@ $(BDir)/__DMEngine__.obj: $(SDir)/__DMEngine__.cpp
 	$(CXX) /c $(SDir)/__DMEngine__.cpp /Fo$(BDir)/__DMEngine__.obj $@ $(Flags)
 
 $(Objects): $(SDir)/$(*B).cpp
-	$(CXX) /c $(SDir)/$(*B).cpp /Fo$*.obj $(Flags) /I$(HDir) /FI/__DMEngine__.h
+	$(CXX) /c $(SDir)/$(*B).cpp /Fo$*.obj $(Flags) /I$(HDir) /FI__DMEngine__.h
 
 clean:
 	del $(BDir) *.log $(AppName).exe /Q

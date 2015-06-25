@@ -16,7 +16,7 @@
 	<Import Project="$(VCTargetsPath)/Microsoft.Cpp.props"/>
 	<Import Project="$(UserRootDir)/Microsoft.Cpp.$(Platform).user.props"/>
 
-	<PPropertyGroup>
+	<PropertyGroup>
 		<ConfigurationType>Makefile</ConfigurationType>
 		<UseDebugLibraries>true</UseDebugLibraries>
 		<PlatformToolset>v120</PlatformToolset>
