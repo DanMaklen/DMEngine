@@ -254,12 +254,12 @@ int main(){
 }
 
 //Misc
-unsigned int LoadShader(const char* fpath, GLenum ShaderType){
+unsigned int LoadShader(const char* fpath, unsigned int ShaderType){
 	int fsz;
 	char* buf;
 	int sid;
 
-	FILE* file = fopen(fpath, "r");
+	FILE* file = fopen(fpath, "rb");
 	if(file == nullptr) {DME::log("Unable to load shaderfile: %s", fpath); return -1;}	//File Doesn't exit
 
 	fseek(file, 0, SEEK_END);

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<ProjectGuid>{41F15A80-1693-4F3A-8212-52952CD4AA52}</ProjectGuid>
+		<Keyword>MakeFileProj</Keyword>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectConfiguration Include="Debug|Win32">
+			<Configuration>Debug</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+	</ItemGroup>
+
+	<Import Project="$(VCTargetsPath)/Microsoft.cpp.Default.props"/>
+	<Import Project="$(VCTargetsPath)/Microsoft.Cpp.props"/>
+	<Import Project="$(UserRootDir)/Microsoft.Cpp.$(Platform).user.props"/>
+
+	<ProjectGroup>
+		<ConfigurationType>Makefile</ConfigurationType>
+		<UseDebugLibraries>true</UseDebugLibraries>
+		<PlatformToolset>v140</PlatformToolset>
+		<NMakeOutput>DMEngine.exe</NMakeOutput>
+		<NMakeBuildCommandLine>nmake /F NMakefile build</NMakeBuildCommandLine>
+		<NMakeReBuildCommandline>nmake /F NMakefile rebuild</NMakeReBuildCommandline>
+		<NMakeCleanCommandline>nmake /F NMakefile clean</NMakeCleanCommandline>
+		<NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+		<NMakeForcedIncludes>__DMEngine__.h</NMakeForcedIncludes>
+		<IncludePath>include;$(INCLUDE);$(IncludePath)</IncludePath>
+		<LibraryPath>$(LIB);$(LibraryPath)</LibraryPath>
+	</ProjectGroup>
+
+	<Import Project="$(VCTargetsPath)/Microsoft.Cpp.targets"/>
+
+	<ItemGroup>
+		<ClInclude Include="include/*.h"/>
+		<ClCompile Include="src/*.cpp"/>
+	</ItemGroup>
+</Project>

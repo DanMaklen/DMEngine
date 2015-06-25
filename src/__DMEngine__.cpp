@@ -64,7 +64,7 @@ const LOG& LOG::operator<<(const long double val) const{fprintf(log.__file, "%Lf
 
 //Log
 Log& Log::__GetInstance(){static Log __inst; return __inst;}
-Log::Log() : __file(fopen("DMEngine_Log.log", "aw")){}
+Log::Log() : __file(fopen("DMEngine_Log.log", "a")){}
 Log::~Log(){fclose(__file);}
 const LOG Log::operator()() const{return LOG();}
 int Log::operator()(const char * fmt, ...) const{
