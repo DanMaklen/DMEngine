@@ -302,7 +302,6 @@ unsigned int LinkShader(unsigned int vsID, unsigned int fsID, bool del){
 
 	int success;
 	glGetProgramiv(spID, GL_LINK_STATUS, &success);
-	DME::log() << success;
 	if(!success){
 		DME::log("Shader Linking Faild: vsID(%u) fsID(%u)", vsID, fsID);
 		char* error;

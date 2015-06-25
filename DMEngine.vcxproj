@@ -16,19 +16,19 @@
 	<Import Project="$(VCTargetsPath)/Microsoft.Cpp.props"/>
 	<Import Project="$(UserRootDir)/Microsoft.Cpp.$(Platform).user.props"/>
 
-	<ProjectGroup>
+	<PPropertyGroup>
 		<ConfigurationType>Makefile</ConfigurationType>
 		<UseDebugLibraries>true</UseDebugLibraries>
-		<PlatformToolset>v140</PlatformToolset>
+		<PlatformToolset>v120</PlatformToolset>
 		<NMakeOutput>DMEngine.exe</NMakeOutput>
 		<NMakeBuildCommandLine>nmake /F NMakefile build</NMakeBuildCommandLine>
 		<NMakeReBuildCommandline>nmake /F NMakefile rebuild</NMakeReBuildCommandline>
 		<NMakeCleanCommandline>nmake /F NMakefile clean</NMakeCleanCommandline>
-		<NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+		<NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions);</NMakePreprocessorDefinitions>
 		<NMakeForcedIncludes>__DMEngine__.h</NMakeForcedIncludes>
-		<IncludePath>include;$(INCLUDE);$(IncludePath)</IncludePath>
-		<LibraryPath>$(LIB);$(LibraryPath)</LibraryPath>
-	</ProjectGroup>
+		<IncludePath>include;$(INCLUDE);$(IncludePath);</IncludePath>
+		<LibraryPath>$(LIB);$(LibraryPath);</LibraryPath>
+	</PropertyGroup>
 
 	<Import Project="$(VCTargetsPath)/Microsoft.Cpp.targets"/>
 

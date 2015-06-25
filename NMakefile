@@ -2,8 +2,8 @@ SDir = src
 HDir = include
 BDir = Build
 AppName = DMEngine
-Flags = /Od /Zi
-Lib=\
+Flags = /Od /Zi /EHsc
+Libs = \
 	glfw3dll.lib\
 	glew32.lib\
 	opengl32.lib
@@ -13,16 +13,16 @@ Objects = \
 
 build: $(AppName).exe
 
-$(AppName).exe: $(BDir)/__DMEngine__.o $(Objects)
-	$(CXX) $(BDir)/__DMEngine__.o $(Objects) $(Lib) /Fe$(AppName).exe $(Flags)
+$(AppName).exe: $(BDir)/__DMEngine__.obj $(Objects)
+	$(CXX) $(BDir)/__DMEngine__.obj $(Objects) $(Libs) /Fe$(AppName).exe $(Flags)
 
 $(BDir)/__DMEngine__.obj: $(SDir)/__DMEngine__.cpp
 	$(CXX) /c $(SDir)/__DMEngine__.cpp /Fo$(BDir)/__DMEngine__.obj $@ $(Flags)
 
-$(Objects): $(SDir)/%.cpp
-	$(CXX) /c $(SDir)/$(*B).cpp /Fo$*.obj $(Flags) /I$(HDir) /FI$(HDir)/__DMEngine__.h
+$(Objects): $(SDir)/$(*B).cpp
+	$(CXX) /c $(SDir)/$(*B).cpp /Fo$*.obj $(Flags) /I$(HDir) /FI/__DMEngine__.h
 
 clean:
-	del $(BDir)/* *.log $(AppName).exe
+	del $(BDir) *.log $(AppName).exe /Q
 
 rebuild: clean build

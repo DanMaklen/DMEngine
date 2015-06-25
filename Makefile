@@ -3,7 +3,7 @@ HDir = ./include
 BDir = ./Build
 AppName = DMEngine
 Flags = -std=c++11
-Lib=\
+Libs = \
 	-lglfw\
 	-lGL\
 	-lGLEW
@@ -14,13 +14,13 @@ Objects = \
 build: App-$(AppName)
 
 App-$(AppName): $(BDir)/__DMEngine__.o $(Objects)
-	$(CXX) $(BDir)/__DMEngine__.o $(Objects) -o App-$(AppName) $(Flags) $(Lib)
+	$(CXX) $(BDir)/__DMEngine__.o $(Objects) $(Libs) -o App-$(AppName) $(Flags)
 
 $(BDir)/__DMEngine__.o: $(SDir)/__DMEngine__.cpp
 	$(CXX) -c $< -o $@ $(Flags)
 
 $(BDir)/%.o: $(SDir)/%.cpp
-	$(CXX) -c $< -o $@ $(Flags) -I$(HDir) -include$(HDir)/__DMEngine__.h
+	$(CXX) -c $< -o $@ $(Flags) -I$(HDir) -include__DMEngine__.h
 
 clean:
 	rm $(BDir)/* *.log App-$(AppName) -f
