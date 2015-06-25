@@ -7,3 +7,5 @@ app-*
 *.ilk
 *.pdb
 *.user
+*.sdf
+*.dll
