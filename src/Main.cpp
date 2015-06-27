@@ -9,7 +9,7 @@ using namespace std;
 #include <MasterEngine.h>
 
 static MasterEngine* __EnginePtr;
-
+static GLFWwindow* __RootWindow;
 //Window
 GLFWwindow* CreateWindow(int Width, int Height, const char* Title, int Properties){
 	if(~Properties & WinPropResizable) glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
@@ -236,89 +236,18 @@ void SetFrameResizeCallback(FrameResizeCallbackFunc_t func){__FrameResizeCallbac
 //Main
 int main(){
 	if(glfwInit() != GL_TRUE){DME::log("Unable to initialize GLFW"); exit(-1);}
-	GLFWwindow* tw = CreateWindow(100, 100, "");	//Temporary hack to initialize glew
+	__RootWindow = CreateWindow(800, 600, "Hello World");
 	//glewExperimental = GL_TRUE;
 	if(glewInit() != GLEW_OK){DME::log("Unable to initialize GLEW"); exit(-1);}
-	glfwDestroyWindow(tw);
-
+	
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	
-	__EnginePtr = new MasterEngine;
+	__EnginePtr = new MasterEngine(__RootWindow);
 	__EnginePtr->Run();
 	delete __EnginePtr;
 
 	glfwTerminate();
 	return 0;
-}
-
-//Misc
-unsigned int LoadShader(const char* fpath, unsigned int ShaderType){
-	int fsz;
-	char* buf;
-	int sid;
-
-	FILE* file = fopen(fpath, "rb");
-	if(file == nullptr) {DME::log("Unable to load shaderfile: %s", fpath); return -1;}	//File Doesn't exit
-
-	fseek(file, 0, SEEK_END);
-  	fsz = ftell(file);
-  	rewind(file);
-
-  	buf = new char[fsz+1]; buf[fsz] = '\0';
-  	if(buf == nullptr) return -1;	//out of memory;
-  	if(fread(buf, 1, fsz, file) != fsz) return -1;	//Not all the file is read
-	
-	fclose(file);
-
-  	sid = glCreateShader(ShaderType);
-  	glShaderSource(sid, 1, &buf, nullptr);
-  	glCompileShader(sid);
-
-  	//Compilation Error handeling
-  	int Success;
-  	glGetShaderiv(sid, GL_COMPILE_STATUS, &Success);
-  	if(!Success){
-  		DME::log("Shader Compilation Failed: %s.", fpath);
-  		char* error;
-  		int len;
-  		glGetShaderiv(sid, GL_INFO_LOG_LENGTH, &len);
-  		error = new char[len];
-  		glGetShaderInfoLog(sid, len, &len, error);
-  		DME::log("%s", error);
-
-  		glDeleteShader(sid);
-  		delete[] error;
-  		return -1;
-  	}
-  	return sid;
-}
-unsigned int LinkShader(unsigned int vsID, unsigned int fsID, bool del){
-	int spID = glCreateProgram();
-	glAttachShader(spID, vsID);
-	glAttachShader(spID, fsID);
-	glLinkProgram(spID);
-
-	int success;
-	glGetProgramiv(spID, GL_LINK_STATUS, &success);
-	if(!success){
-		DME::log("Shader Linking Faild: vsID(%u) fsID(%u)", vsID, fsID);
-		char* error;
-		int len;
-		glGetProgramiv(spID, GL_INFO_LOG_LENGTH, &len);
-		error = new char[len];
-		glGetProgramInfoLog(spID, len, &len, error);
-		DME::log("%s", error);
-
-		glDeleteProgram(spID);
-		delete[] error;
-		return -1;
-	}
-
-	if(del){
-		glDeleteShader(vsID);
-		glDeleteShader(fsID);
-	}
-	return spID;
 }

@@ -9,7 +9,8 @@ Libs = \
 	-lGLEW
 Objects = \
 	$(BDir)/Main.o\
-	$(BDir)/MasterEngine.o
+	$(BDir)/MasterEngine.o\
+	$(BDir)/Shader.o
 
 build: App-$(AppName)
 

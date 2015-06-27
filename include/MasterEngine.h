@@ -1,16 +1,20 @@
 #ifndef __20150603_MASTERENGINE_H
 #define __20150603_MASTERENGINE_H
 
+#include <Shader.h>
+
 typedef struct GLFWwindow GLFWwindow;
 
 class MasterEngine{
+	MasterEngine() = delete;
 	MasterEngine(const MasterEngine&) = delete;
 	MasterEngine(MasterEngine&&) = delete;
 private:
 	GLFWwindow* win;
+	Shader sp;
 
 public:
-	MasterEngine();
+	MasterEngine(GLFWwindow*);
 	~MasterEngine();
 	void Run();
 

@@ -5,9 +5,9 @@ using namespace std;
 #include <GLFW/glfw3.h>
 #include <Main.h>
 #include <MasterEngine.h>
+#include <Shader.h>
 
-MasterEngine::MasterEngine(){
-	win = CreateWindow(800, 600, "Hello World");
+MasterEngine::MasterEngine(GLFWwindow* ParentWindow) : win(ParentWindow){
 	SetEventCapture(win, EventKeyboard);
 	SetKeyboardCallback(&MasterEngine::KeyboardEventHandler);
 	Init();
@@ -25,7 +25,7 @@ void MasterEngine::Run(){
 }
 
 //SomeData
-GLuint vao, vbo, ebo, vs, fs, fs1, sp, sp1;
+GLuint vao, vbo, ebo;
 float vertices[] = {
 	//Pos 					//Color
      1.0f,  1.0f, 0.0f,		1.0, 0.0, 0.0,
@@ -51,13 +51,14 @@ void MasterEngine::Init(){
 	glViewport(0, 0, 800, 600);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	
-	vs = LoadShader("shaders/Test.vs", GL_VERTEX_SHADER);
-	fs = LoadShader("shaders/Test.fs", GL_FRAGMENT_SHADER);
+	sp.Set("shaders/Test.vs", "shaders/Test.fs");
+	//vs = LoadShader(, GL_VERTEX_SHADER);
+	//fs = LoadShader(, GL_FRAGMENT_SHADER);
 	//fs1 = LoadShader("Shaders/Test1.fs", GL_FRAGMENT_SHADER);
-	sp = LinkShader(vs, fs);
+	//sp = LinkShader(vs, fs);
 	//sp1 = LinkShader(vs, fs1);
-	glDeleteShader(vs);
-	glDeleteShader(fs);
+	//glDeleteShader(vs);
+	//glDeleteShader(fs);
 	//glDeleteShader(fs1);
 
 	glGenBuffers(1, &vbo);
@@ -78,9 +79,10 @@ void MasterEngine::Init(){
 }
 void MasterEngine::Render(){
 	glClear(GL_COLOR_BUFFER_BIT);
-	
+
 	glBindVertexArray(vao);
-		glUseProgram(sp);
+		//glUseProgram(sp);
+		sp.Attach();
 		//glUniform4f(glGetUniformLocation(sp, "MyColor"), 1.0f, (sin(glfwGetTime()/2) / 2) + 0.5, 0.0f, 0.0f);
 		glDrawElements(GL_TRIANGLES, sizeof(indices)/sizeof(unsigned short), GL_UNSIGNED_SHORT, (void*)(0*sizeof(unsigned short)));
 		//glUniform4f(glGetUniformLocation(sp, "MyColor"), 0.0f, 0.0f, 1.0f, 0.0f);
