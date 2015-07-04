@@ -10,7 +10,8 @@ Libs = \
 Objects = \
 	$(BDir)/Main.o\
 	$(BDir)/MasterEngine.o\
-	$(BDir)/Shader.o
+	$(BDir)/Shader.o\
+	$(BDir)/Image.o
 
 build: App-$(AppName)
 

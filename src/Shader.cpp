@@ -19,7 +19,7 @@ unsigned int Shader::CompileShader(const char* fpath, unsigned int ShaderType){
 
   	buf = new char[fsz+1]();
   	if(fread(buf, 1, fsz, file) != fsz){	//Not all the file is read
-  		DME::log("Unexpected error while file %s is read", fpath);
+  		DME::log("Unexpected error while reading file: %s", fpath);
   		delete[] buf;
   		return -1;
   	}

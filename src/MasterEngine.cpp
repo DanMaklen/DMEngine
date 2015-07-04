@@ -6,6 +6,7 @@ using namespace std;
 #include <Main.h>
 #include <MasterEngine.h>
 #include <Shader.h>
+#include <Image.h>
 
 MasterEngine::MasterEngine(GLFWwindow* ParentWindow) : win(ParentWindow){
 	SetEventCapture(win, EventKeyboard);
@@ -35,6 +36,8 @@ float vertices[] = {
     -1.0f, -1.0f, 0.0f,		0.0, 1.0, 1.0
 };
 unsigned short indices[] = {0, 1, 2, 2, 3, 4};
+unsigned int W, H;
+char* buf;
 
 //Event Handlers
 void MasterEngine::KeyboardEventHandler(GLFWwindow*, int key, int scancode, int action, int mod){
@@ -52,14 +55,7 @@ void MasterEngine::Init(){
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	
 	sp.Set("shaders/Test.vs", "shaders/Test.fs");
-	//vs = LoadShader(, GL_VERTEX_SHADER);
-	//fs = LoadShader(, GL_FRAGMENT_SHADER);
-	//fs1 = LoadShader("Shaders/Test1.fs", GL_FRAGMENT_SHADER);
-	//sp = LinkShader(vs, fs);
-	//sp1 = LinkShader(vs, fs1);
-	//glDeleteShader(vs);
-	//glDeleteShader(fs);
-	//glDeleteShader(fs1);
+	buf = Image::Parse("textures/Test.png", W, H);
 
 	glGenBuffers(1, &vbo);
 	glGenBuffers(1, &ebo);
@@ -75,17 +71,13 @@ void MasterEngine::Init(){
 		glEnableVertexAttribArray(0);		
 		glEnableVertexAttribArray(1);		
 	glBindVertexArray(0);
-
 }
 void MasterEngine::Render(){
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glBindVertexArray(vao);
-		//glUseProgram(sp);
 		sp.Attach();
-		//glUniform4f(glGetUniformLocation(sp, "MyColor"), 1.0f, (sin(glfwGetTime()/2) / 2) + 0.5, 0.0f, 0.0f);
 		glDrawElements(GL_TRIANGLES, sizeof(indices)/sizeof(unsigned short), GL_UNSIGNED_SHORT, (void*)(0*sizeof(unsigned short)));
-		//glUniform4f(glGetUniformLocation(sp, "MyColor"), 0.0f, 0.0f, 1.0f, 0.0f);
 		glDrawElements(GL_TRIANGLES, sizeof(indices)/sizeof(unsigned short), GL_UNSIGNED_SHORT, (void*)(3*sizeof(unsigned short)));
 	glBindVertexArray(0);
 	
