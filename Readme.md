@@ -23,3 +23,8 @@ Dependencies:
 	-GLFW v3.1.1
 	-GLEW v1.12.0
 	-OpenGL 4.4
+
+Collaboration Guide:
+	-Add the tag "//<<IMPROVE>>//" If there is a possible performance improvment that you are just lazy to do right now :D Please hit to the kind of improvment next to it.
+	-Add the tag "//<<CANIMPROVE>>//" If there is a possible performance improvment but might make the code less readable or maintainable. Please hit to the kind of improvment next to it.
+	

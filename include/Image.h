@@ -3,7 +3,13 @@
 
 class Image{
 public:
-	static char* Parse(const char* const, unsigned int&, unsigned int&);
+	enum struct Type{
+		Null,
+		PNG,									//PNG
+		Count
+	};
+public:
+	static char* Parse(const char* const, unsigned int&, unsigned int&, const Type = Type::Null);
 };
 
 #endif
