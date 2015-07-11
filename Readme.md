@@ -4,6 +4,7 @@ Current Features:
 	-Shader Class
 	-Shader File Compiling
 	-Shader Program Lingking
+	-Reverse Byte Order for Little-Endian / Big-Endian conversion.
 	
 Working On:
 	-Image/Texture Parsing
@@ -17,6 +18,8 @@ Improvments:
 	-Logs preceded with basic information like time? Kind of message like Error or Warning or maybe information?
 	-Better error handeling or termination (better than "exit");
 	-Tri-like structure for faster Magic Number comparison in Image::Parse (Possibly not needed and its overhead will not be worth it or maybe even cause performance drop, need testing\calculating)
+	-'ReverseByteOrder' have a good chance to be platform dependent, so look for a cross-platform solution or confirm platform independability.
+
 Known Bugs:
 
 Dependencies:

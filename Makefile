@@ -11,7 +11,8 @@ Objects = \
 	$(BDir)/Main.o\
 	$(BDir)/MasterEngine.o\
 	$(BDir)/Shader.o\
-	$(BDir)/Image.o
+	$(BDir)/Image.o\
+	$(BDir)/Misc.o
 
 build: App-$(AppName)
 

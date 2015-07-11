@@ -11,7 +11,8 @@ Objects = \
 	$(BDir)/Main.obj\
 	$(BDir)/MasterEngine.obj\
 	$(BDir)/Shader.obj\
-	$(BDir)/Image.obj
+	$(BDir)/Image.obj\
+	$(BDir)/Misc.obj
 
 build: $(AppName).exe
 

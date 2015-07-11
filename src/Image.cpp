@@ -54,8 +54,19 @@ char* Image::Parse(const char* const fpath, unsigned int &Width, unsigned int &H
 	return nullptr;
 }
 
+//Parsing
+//Must close file before return.
+
+//PNG
 static char* ParsePNG(FILE* file, unsigned int &Width, unsigned int &Height){
 	DME::log("I am PNG");
+
+	int  ChunkSize;
+	char ChunkType[5] = {};
+
+	fread((char*)&ChunkSize, 1, 4, file);
+	fread(ChunkType, 1, 4, file);
+	DME::log("%x", ((char*)&ChunkSize)[0]);
 	fclose(file);
 	return nullptr;
 }
