@@ -1,27 +1,42 @@
 #include <Image.h>
+
 #include <cstdio>
 #include <cstring>
+#include <Misc.h>
+#include <SOIL.h>
+
+static unsigned char* ParsePNG(FILE*, unsigned int&, unsigned int&);
 
 static const char* MagicNumber[] = {
 	"",
-	"\x89\x50\x4E\x47\x0D\x0A\x1A\x0A"};
+	"\x89\x50\x4E\x47\x0D\x0A\x1A\x0A"			//PNG
+};
 static const unsigned int MagicWidth[] = {
 	0,
 	sizeof(MagicNumber[int(Image::Type::PNG)])
 };
-static char* ParsePNG(FILE*, unsigned int&, unsigned int&);
-static char* (* const ParseType[])(FILE*, unsigned int&, unsigned int&) = {
+static unsigned char* (* const ParseType[])(FILE*, unsigned int&, unsigned int&) = {
 	nullptr,
 	ParsePNG
 };
 
-char* Image::Parse(const char* const fpath, unsigned int &Width, unsigned int &Height, const Type ft){
+unsigned char* Image::Parse(const char* const fpath, unsigned int &Width, unsigned int &Height, const Type ft){
+	if(ft >= Type::Count){
+		DME::log("Bad File Type Enum");
+		return nullptr;
+	}
+
+	//SOIL Support
+	//SOIL will always execute unless specified the type.
+	if(ft == Type::Null)
+		return SOIL_load_image(fpath, (int*)&Width, (int*)&Height, 0, SOIL_LOAD_RGB);
+
 	char temp[100];
-	
+	Width = Height = 0;
+
 	FILE* file = fopen(fpath, "rb");
 	if(file == nullptr){
 		DME::log("Unable to open file: %s", fpath);
-		Width = Height = 0;
 		return nullptr;
 	}
 
@@ -40,13 +55,18 @@ char* Image::Parse(const char* const fpath, unsigned int &Width, unsigned int &H
 	}
 
 	for(int i = 1; i < int(Type::Count); i++){
+		if(MagicWidth[i] < MagicWidth[i-1]){
+			DME::log("Fatal Error!!");
+			fclose(file);
+			return nullptr;
+		}
 		if(fread(temp, 1, MagicWidth[i] - MagicWidth[i-1], file) != MagicWidth[i] - MagicWidth[i-1]){
 			DME::log("Unexpected error while reading file: %s", fpath);
 			fclose(file);
 			return nullptr;
 		}
-		if(memcmp(MagicNumber[i], temp, MagicWidth[i]) != 0) continue;
-		return ParseType[i](file, Width, Height);
+		if(memcmp(MagicNumber[i], temp, MagicWidth[i]) == 0)
+			return ParseType[i](file, Width, Height);
 	}
 	
 	DME::log("File %s has Unsupported Format!", fpath);
@@ -58,15 +78,21 @@ char* Image::Parse(const char* const fpath, unsigned int &Width, unsigned int &H
 //Must close file before return.
 
 //PNG
-static char* ParsePNG(FILE* file, unsigned int &Width, unsigned int &Height){
-	DME::log("I am PNG");
-
+static unsigned char* ParsePNG(FILE* file, unsigned int &Width, unsigned int &Height){
 	int  ChunkSize;
 	char ChunkType[5] = {};
 
-	fread((char*)&ChunkSize, 1, 4, file);
+	//Reading First Chunk
+	fread((char*)&ChunkSize, 1, 4, file); DME::ReverseByteOrder(ChunkSize);
 	fread(ChunkType, 1, 4, file);
-	DME::log("%x", ((char*)&ChunkSize)[0]);
+	if(memcmp(ChunkType, "IHDR", 4) && ChunkSize != 0x0D){
+		DME::log("Corrupted PNG File! First invalid first chunk of type %s and size %d", ChunkType, ChunkSize);
+		fclose(file);
+		return nullptr;
+	}
+	
+	
+	
 	fclose(file);
 	return nullptr;
 }

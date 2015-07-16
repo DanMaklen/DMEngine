@@ -5,13 +5,14 @@ Current Features:
 	-Shader File Compiling
 	-Shader Program Lingking
 	-Reverse Byte Order for Little-Endian / Big-Endian conversion.
-	
+	-Temporary Support for several image types using SOIL until image parsers are complete.
+
 Working On:
-	-Image/Texture Parsing
+	-Image/Texture Parsing (PNG Parsing)
 
 Future Ideas:
 	-ini File for settings like log folder location.
-	-Function to read a file and put it in a char*? Is it needed (Needed 1 time(s) in Shader class).
+	-Function to read a file and put it in a char*? Is it needed (Needed 1 time(s) in Shader class). (Or maybe a class that handels error reporting in the log).
 
 Improvments:
 	-Logs divided into files (by date or maybe by session).
@@ -26,6 +27,7 @@ Dependencies:
 	-GLFW v3.1.1
 	-GLEW v1.12.0
 	-OpenGL 4.4
+	-SOIL (In linux, need to add it in NMakefile for windows)
 
 Collaboration Guide:
 	-Add the tag "//<<IMPROVE>>//" If there is a possible performance improvment that you are just lazy to do right now :D Please hit to the kind of improvment next to it.

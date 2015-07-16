@@ -6,7 +6,8 @@ Flags = -std=c++11
 Libs = \
 	-lglfw\
 	-lGL\
-	-lGLEW
+	-lGLEW\
+	-lSOIL
 Objects = \
 	$(BDir)/Main.o\
 	$(BDir)/MasterEngine.o\
