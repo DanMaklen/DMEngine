@@ -56,7 +56,7 @@ void MasterEngine::Init(){
 	
 	sp.Set("shaders/Test.vs", "shaders/Test.fs");
 	//buf = Image::Parse("textures/Test.png", W, H);
-
+	
 	unsigned int width, height;
 	unsigned char* image = Image::Parse("textures/Test3.png", width, height, Image::Type::PNG);
 

@@ -11,5 +11,4 @@ public:
 public:
 	static unsigned char* Parse(const char* const, unsigned int&, unsigned int&, const Type = Type::Null);
 };
-
 #endif

@@ -20,6 +20,8 @@ Improvments:
 	-Better error handeling or termination (better than "exit");
 	-Tri-like structure for faster Magic Number comparison in Image::Parse (Possibly not needed and its overhead will not be worth it or maybe even cause performance drop, need testing\calculating)
 	-'ReverseByteOrder' have a good chance to be platform dependent, so look for a cross-platform solution or confirm platform independability.
+	-Better organization for 'Parse' functions in 'Image.cpp'
+	-Missing CRC checking and some features in PNG parser.
 
 Known Bugs:
 
