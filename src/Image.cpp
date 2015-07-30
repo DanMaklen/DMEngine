@@ -4,6 +4,7 @@
 #include <cstring>
 #include <Misc.h>
 #include <SOIL.h>
+#include <cstdlib>
 
 //Maybe find a better way/organization for the Parse Function
 #define __ParseFunction(__NAME) namespace __NAME{extern unsigned char* Parse(FILE*, unsigned int&, unsigned int&);}
@@ -79,38 +80,86 @@ unsigned char* Image::Parse(const char* const fpath, unsigned int &Width, unsign
 	return nullptr;
 }
 
-//Parsing
+//Parsing	
 //Must close file before return.
 namespace{
 ///********************
 ///**********PNG
 ///********************
 namespace PNG{
-unsigned char* ReadChunk(FILE*);
+int zlibParse(unsigned char* Result, const unsigned int sz, const unsigned char* buf, const unsigned int bufSize){
+	unsigned short LEN;
+
+	if(*buf & 0x0F == 8 || *buf & 0xF0 > 7){
+		DME::log("Corrupted zlib format. First byte have invalid combination of CM and CINFO flags.");
+		return -1;
+	}
+	if(DME::ReverseByteOrder(*(unsigned short*)buf) % 31 != 0){
+		DME::log("Corrupted zlib format. First 2 bytes is not divisible by 31.");
+		return -1;
+	}
+	if(*buf++ != 0x78){
+		DME::log("DMEngine zlibParse currently support only zlib compression method of value \'0x78\'.");
+		return -2;
+	}
+
+	if(*buf++ & 0x20) buf+= 4;	//Skipping DICTID
+	//DEFLATE\INFLATE
+	while(DME::log("%x", *buf), ~*buf & 0x01){	//Block
+		
+		switch(*buf & 0x06){
+		case 0x00:	//Uncompressed.
+			DME::log() << "Uncompressed";
+			buf++;
+			LEN = DME::ReverseByteOrder(*(unsigned short*)buf);
+			buf += 4;
+			memcpy(Result, buf, LEN);
+			Result += LEN;
+			buf += LEN;
+			return;
+		case 0x02:	//Compressed with fixed Huffman codes.
+			DME::log() << "Compressed with fixed Huffman codes";
+			return 0;
+		case 0x04:	//Compressed with dynamic Huffman codes.
+			DME::log() << "Compressed with dynamic Huffman codes";
+			return 0;
+		case 0x06:	//Reserved (error!)
+			DME::log("Corrupted DEFLATE\\INFLATE format. In a block BTYPE is set to (11).");
+			return -1;
+		default:	//WTF?
+			DME::log("Unexpected error while reading DEFLATE\\INFLATE block with first byte %x", *buf);
+			return -3;
+		}
+
+		//break;
+	}
+
+	return 0;
+}
 unsigned char* Parse(FILE* file, unsigned int &Width, unsigned int &Height){
-	unsigned int  ChunkSize, CRC;
+	//<<IMPROVE>>//Read the chunk gradually instead of reading the whole chunk at once.
+	unsigned int  ChunkSize, CRC, bufSize = 0;
 	unsigned char BitDepth, ColorType, CompressionMethod, FilterMethod, InterlaceMethod;
 	unsigned char ChunkType[5] = {};
-	unsigned char buf[4 * 1024] = {};
-
+	unsigned char *Result = nullptr, *tbuf = nullptr, *buf = new unsigned char[bufSize];
 	//Reading First Chunk
-	//IHDR
+	//IHDR Chunk
 	{
-		fread((char*)&ChunkSize, 1, 4, file); DME::ReverseByteOrder(ChunkSize);
+		fread((char*)&ChunkSize, 1, 4, file); ChunkSize = DME::ReverseByteOrder(ChunkSize);
 		fread(ChunkType, 1, 4, file);
 		if(memcmp(ChunkType, "IHDR", 4) != 0 && ChunkSize != 13){
 			DME::log("Corrupted PNG File! First invalid first chunk of type %s and size %d", ChunkType, ChunkSize);
 			fclose(file);
 			return nullptr;
 		}
-		fread((char*)&Width, 1, 4, file); DME::ReverseByteOrder(Width);
-		fread((char*)&Height, 1, 4, file); DME::ReverseByteOrder(Height);
+		fread((char*)&Width, 1, 4, file); Width = DME::ReverseByteOrder(Width);
+		fread((char*)&Height, 1, 4, file); Height = DME::ReverseByteOrder(Height);
 		fread((char*)&BitDepth, 1, 1, file);
 		fread((char*)&ColorType, 1, 1, file);
 		fread((char*)&CompressionMethod, 1, 1, file);
 		fread((char*)&FilterMethod, 1, 1, file);
 		fread((char*)&InterlaceMethod, 1, 1, file);
-		fread((char*)&CRC, 1, 4, file); DME::(ReverseByteOrder(CRC));
+		fread((char*)&CRC, 1, 4, file); CRC = DME::ReverseByteOrder(CRC);
 
 		//CRC Chec
 		//Currently not done
@@ -154,17 +203,59 @@ unsigned char* Parse(FILE* file, unsigned int &Width, unsigned int &Height){
 			return nullptr;
 		}
 		if(InterlaceMethod != 0){
-			DME::log("DMEngine PNG Parser currently does not support Interlacing. Please use the External(SOIL) parser for this file.")
+			DME::log("DMEngine PNG Parser currently does not support Interlacing. Please use the External(SOIL) parser for this file.");
 			fclose(file);
 			return nullptr;
 		}
 	}
 	
+	//Other Chunks
+	{
+		fread((char*)&ChunkSize, 1, 4, file); ChunkSize = DME::ReverseByteOrder(ChunkSize);
+		fread(ChunkType, 1, 4, file);
 
+		while(memcmp(ChunkType, "IEND", 4) != 0){
+			if(ChunkType[0] >= 'a' && ChunkType[0] <= 'z'){	//Not Critical
+				//Skipping for now
+				unsigned char dump[ChunkSize];
+				fread(dump, 1, ChunkSize, file);
+			}
+			else if(memcmp(ChunkType, "IDAT", 4) == 0){	//There is an unknown bug here
+				tbuf = buf;
+				buf = new unsigned char[bufSize + ChunkSize];
+				memcpy(buf, tbuf, bufSize);
+				delete[] tbuf;
+				fread(buf + bufSize, 1, ChunkSize, file);
+				bufSize += ChunkSize;
+			}
+			else{	//Other Critical Chunks
+				DME::log("DMEngine PNG Parser currently does not support critical chunks other than \'IDAT\'. Please use the External(SOIL) parser for this file.");
+				fclose(file);
+				return nullptr;
+			}
+			fread((char*)&CRC, 1, 4, file); CRC = DME::ReverseByteOrder(CRC);
+			fread((char*)&ChunkSize, 1, 4, file); ChunkSize = DME::ReverseByteOrder(ChunkSize);
+			fread(ChunkType, 1, 4, file);
+		}
+		//Reading IEND CRC
+		fread((char*)&CRC, 1, 4, file); CRC = DME::ReverseByteOrder(CRC);
+		
+		if(ChunkSize != 0){
+			DME::log("Corrupted PNG File! Last chunk has size of %u.", ChunkSize);
+			fclose(file);
+			delete [] Result;
+			return nullptr;
+		}
+	}
 
-
+	//Decompression
+	if(ColorType == 2) Result = new unsigned char[3 * Width * Height]();
+	//else if(ColorType == 6) Result = new unsigned char[4 * Width * Height]();
+	zlibParse(Result, Width * Height, buf, bufSize);
+	
+	delete[] buf;
 	fclose(file);
-	return nullptr;
+	return Result;
 }	
 }
 

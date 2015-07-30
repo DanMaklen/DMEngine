@@ -60,6 +60,9 @@ void MasterEngine::Init(){
 	unsigned int width, height;
 	unsigned char* image = Image::Parse("textures/Test3.png", width, height, Image::Type::PNG);
 
+	if(image == nullptr) {
+		DME::log() << "Image::Parse returned nullptr";
+	}
 	glGenVertexArrays(1, &vao);
 	glGenBuffers(1, &vbo);
 	glGenBuffers(1, &ebo);
@@ -73,7 +76,7 @@ void MasterEngine::Init(){
 		glVertexAttribPointer(0, 3, GL_FLOAT, false, 8 * sizeof(float), (void*)(0));
 		glVertexAttribPointer(1, 3, GL_FLOAT, false, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 		glVertexAttribPointer(2, 2, GL_FLOAT, false, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-		glEnableVertexAttribArray(0);		
+		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 	glBindVertexArray(0);
